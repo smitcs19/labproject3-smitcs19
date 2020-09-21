@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 public class Project3 {
     public static void main(String[] args) {
@@ -49,7 +50,7 @@ public class Project3 {
                     movie1.setPrimaryTitle(data.substring(b + 1, c));
                     //System.out.println(movie1.getPrimaryTitle());
 
-                    movie1.setOrigionalTitle(data.substring(c + 1, d));
+                    movie1.setOriginalTitle(data.substring(c + 1, d));
                     //System.out.println(movie1.getOriginalTitle());
 
                     movie1.setStartYear(data.substring(d + 1, e));
@@ -58,8 +59,51 @@ public class Project3 {
                     movie1.setRunTimeMins(data.substring(e + 1, f));
                     //System.out.println(movie1.getRunTimeMins());
 
-                    movie1.setGenres(data.substring(f + 1, g));
+                    //movie1.setGenres(data.substring(f + 1, g));
                     //System.out.println(movie1.getGenres());
+
+                    String genreString = data.substring(f+1, g);
+                    //System.out.println(genreString);
+                    int numCommas = 0;
+
+                    for(int j=0; j<genreString.length(); j++){
+                        char instance = genreString.charAt(j);
+                        char comma1 = ',';
+                        if(instance == comma1){
+                            numCommas++;
+                        }
+                    }
+
+                    //System.out.println(numCommas);
+                    if(numCommas==0){
+                        movie1.setGenreArrayList(genreString);
+                    } else if(numCommas==1){
+                        a = genreString.indexOf(",");
+                        b = genreString.indexOf(",", a + 1);
+                        c = genreString.indexOf(",", b + 1);
+                        String firstGenre = genreString.substring(a+1,b);
+                        String secondGenre = genreString.substring(b+1,c);
+                        movie1.setGenreArrayList(firstGenre, secondGenre);
+                    } else if(numCommas==2){
+                        a = genreString.indexOf(",");
+                        b = genreString.indexOf(",", a + 1);
+                        c = genreString.indexOf(",", b + 1);
+                        d = genreString.indexOf(",", c + 1);
+                        String firstGenre = genreString.substring(a+1,b);
+                        String secondGenre = genreString.substring(b+1,c);
+                        String thirdGenre = genreString.substring(c+1,d);
+                        movie1.setGenreArrayList(firstGenre, secondGenre, thirdGenre);
+                    } else if(numCommas==3){
+                        a = genreString.indexOf(",");
+                        b = genreString.indexOf(",", a + 1);
+                        c = genreString.indexOf(",", b + 1);
+                        d = genreString.indexOf(",", c + 1);
+                        e = genreString.indexOf(",", d + 1);
+                        String secondGenre = genreString.substring(b+1,c);
+                        String thirdGenre = genreString.substring(c+1,d);
+                        String extraGenre = genreString.substring(d+1,e);
+                        movie1.setGenreArrayList(secondGenre, thirdGenre, extraGenre);
+                    }
 
                     movieArray[counter] = movie1;
                     counter++;
@@ -79,24 +123,29 @@ public class Project3 {
                 FileOutputStream Movies2005through2020 = new FileOutputStream("Movies2005-2020.txt");
                 fileWriter = new PrintWriter(Movies2005through2020);
 
-                for (int j = 1; j < 801; j++) {
-                    String MY = movieArray[j].getStartYear();
+                    for (int j = 1; j < 801; j++) {
+                        int MY;
+                        try {
+                            MY = Integer.parseInt(movieArray[j].getStartYear());
 
-                    if (MY.equals("2005") || MY.equals("2006") || MY.equals("2007") || MY.equals("2008") || MY.equals("2009") || MY.equals("2010") ||
-                            MY.equals("2011") || MY.equals("2012") || MY.equals("2013") || MY.equals("2014") || MY.equals("2015") || MY.equals("2016") || MY.equals("2017") ||
-                            MY.equals("2018") || MY.equals("2019") || MY.equals("2020")) {
-                        fileWriter.print(movieArray[j].getPrimaryTitle() + ", ");
-                        fileWriter.print(movieArray[j].getStartYear() + ", ");
-                        fileWriter.print(movieArray[j].getOriginalTitle() + ", ");
-                        fileWriter.print(movieArray[j].getRunTimeMins() + ", ");
-                        fileWriter.println(movieArray[j].getGenres());
+                            if(MY>=2005 && MY<=2020) {
+
+                                fileWriter.print(movieArray[j].getStartYear() + ", ");
+                                fileWriter.print(movieArray[j].getPrimaryTitle() + ", ");
+                                fileWriter.print(movieArray[j].getOriginalTitle() + ", ");
+                                fileWriter.print(movieArray[j].getRunTimeMins() + ", ");
+                                //fileWriter.println(movieArray[j].getGenres());
+                            }
+                        } catch (NumberFormatException e1){
+                            System.out.println("Error in start year at line " + j);
+                        }
                     }
-                }
-                fileWriter.close();
+                    fileWriter.close();
 
                 FileOutputStream Documentary = new FileOutputStream("Documentary.txt");
                 fileWriter = new PrintWriter(Documentary);
 
+                /*
                 for (int j = 1; j < 801; j++) {
                     String Doc = movieArray[j].getGenres();
 
@@ -108,6 +157,8 @@ public class Project3 {
                         fileWriter.println(movieArray[j].getGenres());
                     }
                 }
+
+                 */
                 fileWriter.close();
 
                 FileOutputStream titleandyear = new FileOutputStream("Title-Year.txt");
@@ -131,4 +182,6 @@ public class Project3 {
         JOptionPane.showMessageDialog(null, "All tasks complete.");
     }
 }
+
+// C:\Users\Camer\IdeaProjects\project2f-smitcs19\src\moviesDataset.csv
 
