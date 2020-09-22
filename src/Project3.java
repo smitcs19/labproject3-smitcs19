@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Scanner;
 public class Project3 {
     public static void main(String[] args) {
@@ -20,6 +21,7 @@ public class Project3 {
                 Scanner fileReader = new Scanner(myFile);
                 int counter = 0;
                 Movie[] movieArray = new Movie[801]; // I need to store the movie info in an array
+                Genre[] genreArray = new Genre[801];
 
 
                 while (fileReader.hasNextLine()) {
@@ -53,7 +55,10 @@ public class Project3 {
                     movie1.setOriginalTitle(data.substring(c + 1, d));
                     //System.out.println(movie1.getOriginalTitle());
 
-                    movie1.setStartYear(data.substring(d + 1, e));
+                    String syString = data.substring(d + 1, e);
+                    try {
+                        movie1.setStartYear(Integer.parseInt(syString));
+                    } catch(NumberFormatException e2){}
                     //System.out.println(movie1.getStartYear());
 
                     movie1.setRunTimeMins(data.substring(e + 1, f));
@@ -64,48 +69,30 @@ public class Project3 {
 
                     String genreString = data.substring(f+1, g);
                     //System.out.println(genreString);
-                    int numCommas = 0;
 
-                    for(int j=0; j<genreString.length(); j++){
-                        char instance = genreString.charAt(j);
-                        char comma1 = ',';
-                        if(instance == comma1){
-                            numCommas++;
+                    String delimiter = ",";
+                    //genreString holds all of the genres in one string
+                    genreString.split(delimiter);
+                    String [] genreSplit = genreString.split(delimiter);
+
+                    ArrayList<String> genreArrayList = new ArrayList<String>();
+
+                    for (int i=0; i<genreSplit.length; i++){
+                        if(genreSplit[i].contains("\\N")) {
+                            genreArrayList.add("none");
+                        } else{
+                           genreSplit[i] = genreSplit[i].toLowerCase();
+                            //System.out.println(genreSplit[i]);
+                            genreArrayList.add(genreSplit[i]);
                         }
                     }
+                    movie1.setGenres(genreArrayList);
+                    Genre genre1 = new Genre(genreArrayList);
 
-                    //System.out.println(numCommas);
-                    if(numCommas==0){
-                        movie1.setGenreArrayList(genreString);
-                    } else if(numCommas==1){
-                        a = genreString.indexOf(",");
-                        b = genreString.indexOf(",", a + 1);
-                        c = genreString.indexOf(",", b + 1);
-                        String firstGenre = genreString.substring(a+1,b);
-                        String secondGenre = genreString.substring(b+1,c);
-                        movie1.setGenreArrayList(firstGenre, secondGenre);
-                    } else if(numCommas==2){
-                        a = genreString.indexOf(",");
-                        b = genreString.indexOf(",", a + 1);
-                        c = genreString.indexOf(",", b + 1);
-                        d = genreString.indexOf(",", c + 1);
-                        String firstGenre = genreString.substring(a+1,b);
-                        String secondGenre = genreString.substring(b+1,c);
-                        String thirdGenre = genreString.substring(c+1,d);
-                        movie1.setGenreArrayList(firstGenre, secondGenre, thirdGenre);
-                    } else if(numCommas==3){
-                        a = genreString.indexOf(",");
-                        b = genreString.indexOf(",", a + 1);
-                        c = genreString.indexOf(",", b + 1);
-                        d = genreString.indexOf(",", c + 1);
-                        e = genreString.indexOf(",", d + 1);
-                        String secondGenre = genreString.substring(b+1,c);
-                        String thirdGenre = genreString.substring(c+1,d);
-                        String extraGenre = genreString.substring(d+1,e);
-                        movie1.setGenreArrayList(secondGenre, thirdGenre, extraGenre);
-                    }
+                    //System.out.println(genreArrayList);
 
                     movieArray[counter] = movie1;
+                    genreArray[counter] = genre1;
                     counter++;
 
                 }
@@ -126,15 +113,12 @@ public class Project3 {
                     for (int j = 1; j < 801; j++) {
                         int MY;
                         try {
-                            MY = Integer.parseInt(movieArray[j].getStartYear());
+                            MY = movieArray[j].getStartYear();
 
                             if(MY>=2005 && MY<=2020) {
-
-                                fileWriter.print(movieArray[j].getStartYear() + ", ");
-                                fileWriter.print(movieArray[j].getPrimaryTitle() + ", ");
-                                fileWriter.print(movieArray[j].getOriginalTitle() + ", ");
-                                fileWriter.print(movieArray[j].getRunTimeMins() + ", ");
-                                //fileWriter.println(movieArray[j].getGenres());
+                                fileWriter.print(movieArray[j].toString());
+                                //fileWriter.println(genreArray[j].toString());
+                                fileWriter.println();
                             }
                         } catch (NumberFormatException e1){
                             System.out.println("Error in start year at line " + j);
@@ -145,20 +129,15 @@ public class Project3 {
                 FileOutputStream Documentary = new FileOutputStream("Documentary.txt");
                 fileWriter = new PrintWriter(Documentary);
 
-                /*
                 for (int j = 1; j < 801; j++) {
-                    String Doc = movieArray[j].getGenres();
 
-                    if (Doc.contains("Documentary")) {
-                        fileWriter.print(movieArray[j].getPrimaryTitle() + ", ");
-                        fileWriter.print(movieArray[j].getStartYear() + ", ");
-                        fileWriter.print(movieArray[j].getOriginalTitle() + ", ");
-                        fileWriter.print(movieArray[j].getRunTimeMins() + ", ");
-                        fileWriter.println(movieArray[j].getGenres());
+                    if (genreArray[j].isGenre("documentary")) {
+                        fileWriter.print(movieArray[j].toString());
+                        //fileWriter.println(genreArray[j].toString());
+                        fileWriter.println();
                     }
                 }
 
-                 */
                 fileWriter.close();
 
                 FileOutputStream titleandyear = new FileOutputStream("Title-Year.txt");
@@ -166,12 +145,34 @@ public class Project3 {
 
                 for (int j = 1; j < 801; j++) {
                     String title = movieArray[j].getPrimaryTitle();
-                    String year = movieArray[j].getStartYear();
+                    int year = movieArray[j].getStartYear();
 
                     fileWriter.println(title + " " + year);
                 }
                 fileWriter.close();
 
+                FileOutputStream SortedByYear = new FileOutputStream("SortedByYear.txt");
+                fileWriter = new PrintWriter(SortedByYear);
+                Movie movie2 = new Movie();
+
+                for(int i=1900; i<=2020; i++) {
+                    movie2.setStartYear(i);
+                    //System.out.println(movie2.getStartYear());
+                    boolean yearFound = false;
+                    for(int j=1; j<movieArray.length; j++){
+                        int x = movie2.compareTo(movieArray[j]);
+                        //System.out.println(x);
+                        if (x==0){
+                            fileWriter.print(movieArray[j].toString());
+                            fileWriter.println();
+                            yearFound = true;
+                        }
+                    }
+                    if(yearFound) {
+                        fileWriter.println();
+                    }
+
+                } fileWriter.close();
 
                 getPathLoop = false;
             } catch (FileNotFoundException e1) {
@@ -179,7 +180,8 @@ public class Project3 {
             }
         }
 
-        JOptionPane.showMessageDialog(null, "All tasks complete.");
+        //JOptionPane.showMessageDialog(null, "All tasks complete.");
+        System.out.println("All Tasks Complete");
     }
 }
 

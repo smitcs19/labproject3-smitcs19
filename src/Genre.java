@@ -1,12 +1,22 @@
 import java.util.ArrayList;
 
 public class Genre {
-    ArrayList<Genre> genreArrayList = new ArrayList<Genre>();
+    ArrayList<String> genreArrayList = new ArrayList<String>();
 
-    Genre genre1 = new Genre();
+    public Genre(ArrayList<String> input){
+        genreArrayList = input;
+    }
 
-    //public Genre();
+    public boolean isGenre(String category){
+        return (genreArrayList.contains(category));
+    }
 
-    public ArrayList<Genre> getGenreArrayList() {return genreArrayList;}
-    public void setGenreArrayList(ArrayList<Genre> genreArrayList) {this.genreArrayList = genreArrayList;}
+    @Override
+    public String toString() {
+        String ret = "Genres: ";
+        for (String s : genreArrayList){
+            ret += s + " ";
+        }
+        return ret;
+    }
 }

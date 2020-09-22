@@ -1,48 +1,45 @@
 import java.util.ArrayList;
 
-public class Movie {
-    ArrayList<String> genreArrayList = new ArrayList<String>();
+public class Movie implements Comparable<Movie>{
 
     private String titleType;
     private String primaryTitle;
     private String originalTitle;
-    private String startYear;
+    private int startYear;
     private String runTimeMins;
-    //private String genres;
+    private Genre genre;
 
-    //public Genre genreList;
-
-    public void setGenreArrayList(String genreFor1) {
-        genreArrayList.add(genreFor1);
-    }
-    public void setGenreArrayList(String genreFor1, String genreFor2) {
-        genreArrayList.add(genreFor1);
-        genreArrayList.add(genreFor2);
-    }
-    public void setGenreArrayList(String genreFor1, String genreFor2, String genreFor3) {
-        genreArrayList.add(genreFor1);
-        genreArrayList.add(genreFor2);
-        genreArrayList.add(genreFor3);
+    public void setGenres(ArrayList<String> list){
+        Genre temp = new Genre(list);
+        genre = temp;
     }
 
+    @Override
+    public String toString(){
+        String ret = "Type: " + titleType + ", ";
+        ret+= "Title: " + primaryTitle + ", ";
+        ret+= "Original Title: " + originalTitle + ", ";
+        ret+= "Start Year: " + startYear + ", ";
+        ret+= "Run Time: " + runTimeMins + ", ";
+        ret+= "Genre: " + genre.toString();
+        return ret;
+    }
 
     public Movie(){
 
         this.titleType = "None";
         this.primaryTitle = "None";
         this.originalTitle ="None";
-        this.startYear = "None";
+        this.startYear = 0;
         this.runTimeMins = "None";
-        //this.genres = "None";
     }
 
     public Movie(String titleType, String primaryTitle, String originalTitle, String startYear, String runTimeMins, String genres){
         this.titleType = titleType;
         this.primaryTitle = primaryTitle;
         this.originalTitle = originalTitle;
-        this.startYear = startYear;
+        this.startYear = Integer.parseInt(startYear);
         this.runTimeMins = runTimeMins;
-        //this.genres = genres;
     }
 
     public String getTitleType() {
@@ -54,15 +51,12 @@ public class Movie {
     public String getOriginalTitle() {
         return originalTitle;
     }
-    public String getStartYear() {
+    public int getStartYear() {
         return startYear;
     }
     public String getRunTimeMins() {
         return runTimeMins;
     }
-    //public String getGenres() {
-      //  return genres;
-    //}
 
     public void setTitleType(String titleType) {
         this.titleType = titleType;
@@ -73,13 +67,20 @@ public class Movie {
     public void setOriginalTitle(String originalTitle) {
         this.originalTitle = originalTitle;
     }
-    public void setStartYear(String startYear) {
+    public void setStartYear(int startYear) {
         this.startYear = startYear;
     }
     public void setRunTimeMins(String runTimeMins) {
         this.runTimeMins = runTimeMins;
     }
-    //public void setGenres(String genres) {
-     //   this.genres = genres;
-    //}
+
+    public int compareTo(Movie otherMovie){
+        if(this.startYear==otherMovie.startYear){
+            return 0;
+        } else if(this.startYear>otherMovie.startYear){
+            return 1;
+        } else{
+            return -1;
+        }
+    }
 }
